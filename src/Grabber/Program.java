@@ -1,5 +1,6 @@
-package Grabber;
+//package Grabber;
 import org.apache.commons.io.FileUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -27,8 +30,10 @@ import javafx.stage.Stage;
 
 public class Program extends Application{
 
-	String user="";
-	String checkUser;
+	//private String user="";
+	private String checkUser;
+	private static String URL="";
+	
 	
 	public static void main(String[] args)  {
 		launch(args);
@@ -37,6 +42,10 @@ public class Program extends Application{
 	@Override
 	public void start(Stage arg0) throws Exception {
 		// TODO Auto-generated method stub
+		final Parameters params = getParameters(); // get command line args
+		final List<String> parameters = params.getRaw();
+		URL = !parameters.isEmpty() ? parameters.get(0):URL; // set the parameter[0] as url
+		
 		arg0.setTitle("Web Page Grabber");
 		BorderPane bp = new BorderPane();
 		bp.setPadding(new Insets(10,50,50,50));
@@ -50,7 +59,12 @@ public class Program extends Application{
 
         Label lblUserName = new Label("Webpage URL: ");
         final TextField txtUserName = new TextField();
-        txtUserName.setText("http://");
+        
+        if (URL.startsWith("http://") ||URL.startsWith("https://")){
+        	txtUserName.setText(URL);
+        }
+        else txtUserName.setText("http://"+URL);
+        
         Button btnLogin = new Button("Grab it!");
         final Label lblMessage = new Label();
         
@@ -94,7 +108,7 @@ public class Program extends Application{
         		    {
         		        html += line;
         		    }
-        		    File htmlTemplateFile = new File("src/cnn.html");
+        		    File htmlTemplateFile = new File("src/"+URL.replace("/", "")+".html");
         		    FileUtils.writeStringToFile(htmlTemplateFile,html);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
